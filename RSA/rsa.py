@@ -86,7 +86,7 @@ def chooseKeys():
 
 def leerTexto():
     #text = input("Introduce Texto")
-    text = "tusa.txt"
+    text = "texto.txt"
     f = open(text, "r")
 
     #for x in f:
@@ -150,6 +150,38 @@ def encrypt(message, file_name='public_keys.txt', block_size=2):
         return encrypted_message
 
 
+def ecpt(message,block_size = 2 ):
+    encrypted_blocks = []
+    ciphertext = -1
+    if (len(message) > 0):
+        # initialize ciphertext to the ASCII of the first character of message
+        ciphertext = ord(message[0])
+
+    for i in range(1, len(message)):
+        # add ciphertext to the list if the max block size is reached
+        # reset ciphertext so we can continue adding ASCII codes
+        if (i % block_size == 0):
+            encrypted_blocks.append(ciphertext)
+            ciphertext = 0
+
+        # multiply by 1000 to shift the digits over to the left by 3 places
+        # because ASCII codes are a max of 3 digits in decimal
+        ciphertext = ciphertext * 1000 + ord(message[i])
+
+        # add the last block to the list
+    encrypted_blocks.append(ciphertext)
+
+    # encrypt all of the numbers by taking it to the power of e
+    # and modding it by n
+    for i in range(len(encrypted_blocks)):
+        encrypted_blocks[i] = str((encrypted_blocks[i] ** e) % n)
+
+    # create a string from the numbers
+    encrypted_message = " ".join(encrypted_blocks)
+
+    return encrypted_message
+
+
 def decrypt(blocks, block_size=2):
     """
     Decrypts a string of numbers by raising each number to the power of d and
@@ -186,9 +218,10 @@ def decrypt(blocks, block_size=2):
             tmp = chr(int_blocks[i] % 1000) + tmp
             int_blocks[i] //= 1000
         message += tmp
-
+    print(message)
     return message
 
+def encriptar(f)
 
 def rsa():
     print("RSA")
@@ -206,7 +239,39 @@ def rsa():
 
         if (option == 'y'):
             print('Encrypting...')
-            print(encrypt(message))
+            for x in f:
+                print(ecpt(f))
+
+        else:
+            file_option = input('Enter the file name that stores the public key: ')
+            print('Encrypting...')
+            print(encrypt(message, file_option))
+
+    elif (instruction == 'd'):
+        message = input('What would you like to decrypt?\n')
+        print('Decryption...')
+        print(decrypt(message))
+    else:
+        print('That is not a proper instruction.')
+
+
+def rsaTest():
+    print("RSA")
+    f = leerTexto()
+
+    choose_again = input('Do you want to generate new public and private keys? (y or n) ')
+
+    if (choose_again == 'y'):
+        chooseKeys()
+    instruction = input('Would you like to encrypt or decrypt? (Enter e or d): ')
+
+    if (instruction == 'e'):
+        message = input('What would you like to encrypt?\n')
+        option = input('Do you want to encrypt using your own public key? (y or n) ')
+
+        if (option == 'y'):
+            print('Encrypting...')
+            print(encrypt(f))
         else:
             file_option = input('Enter the file name that stores the public key: ')
             print('Encrypting...')
@@ -221,5 +286,5 @@ def rsa():
 
 
 if __name__ == '__main__':
-    rsa()
+    rsaTest()
 
